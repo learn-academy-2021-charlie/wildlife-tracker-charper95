@@ -359,6 +359,54 @@ PATCH localhost:3000/sightings/3
 
 # Story: As the consumer of the API I can destroy an animal sighting in the database.
 
+Controller
+
+    def destroy
+        sighting = Sighting.find(params[:id])
+        if sighting.destroy
+            render json: sighting
+        else 
+            render json: sighting.errors
+        end
+    end
+
+POSTMAN
+
+DELETE localhost:3000/sightings/3
+
+{
+    "id": 3,
+    "animal_id": 1,
+    "date": "2006-05-17T12:40:00.000Z",
+    "latitude": "0° 48′ 0″ N",
+    "longitude": "14° 55′ 59.88″ E",
+    "created_at": "2021-08-12T18:35:22.102Z",
+    "updated_at": "2021-08-12T18:52:26.667Z"
+}
+
+GET localhost:3000/sightings
+
+[
+    {
+        "id": 2,
+        "animal_id": 1,
+        "date": "2005-04-12T11:30:00.000Z",
+        "latitude": "0° 48′ 0″ N",
+        "longitude": "14° 55′ 59.88″ E",
+        "created_at": "2021-08-12T18:34:32.222Z",
+        "updated_at": "2021-08-12T18:34:32.222Z"
+    },
+    {
+        "id": 4,
+        "animal_id": 2,
+        "date": "2021-08-12T11:36:00.000Z",
+        "latitude": "19° 26′ 0″ N",
+        "longitude": "99° 8′ 0″ W",
+        "created_at": "2021-08-12T18:37:47.447Z",
+        "updated_at": "2021-08-12T18:37:47.447Z"
+    }
+]
+
 # Story: As the consumer of the API, when I view a specific animal, I can also see a list sightings of that animal.
 Hint: Checkout the Ruby on Rails API docs on how to include associations.
 
