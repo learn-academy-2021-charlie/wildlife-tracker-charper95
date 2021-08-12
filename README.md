@@ -242,6 +242,84 @@ SEND
 # Story: As the consumer of the API I can create a sighting of an animal with date (use the datetime datatype), a latitude, and a longitude.
 Hint: An animal has_many sightings. (rails g resource Sighting animal_id:integer ...)
 
+$ rails g resource Sighting animal_id:integer date:datetime latitude:string longitude:string
+
+$ rails db:migrate
+
+$ rails c
+
+lion = Animal.first
+lion.sightings.create date: '2005-04-12 11:30:00',  latitude: '0° 48′ 0″ N', longitude: '14° 55′ 59.88″ E'
+
+<Sighting id: 2, animal_id: 1, date: "2005-04-12 11:30:00.000000000 +0000", latitude: "0° 48′ 0″ N", longitude: "14° 55′ 59.88″ E", created_at: "2021-08-12 18:34:32.222540000 +0000", updated_at: "2021-08-12 18:34:32.222540000 +0000">
+
+lion.sightings.create date: '2005-04-16 12:40:00',  latitude: '0° 48′ 0″ N', longitude: '14° 55′ 59.88″ E'
+
+<Sighting id: 3, animal_id: 1, date: "2005-04-16 12:40:00.000000000 +0000", latitude: "0° 48′ 0″ N", longitude: "14° 55′ 59.88″ E", created_at: "2021-08-12 18:35:22.102020000 +0000", updated_at: "2021-08-12 18:35:22.102020000 +0000"> 
+
+axolotl = Animal.find 2
+axolotl.sightings.create date: '2021-08-12 11:36:00', latitude: '19° 26′ 0″ N', longitude: '99° 8′ 0″ W'
+
+<Sighting id: 4, animal_id: 2, date: "2021-08-12 11:36:00.000000000 +0000", latitude: "19° 26′ 0″ N", longitude: "99° 8′ 0″ W", created_at: "2021-08-12 18:37:47.447389000 +0000", updated_at: "2021-08-12 18:37:47.447389000 +0000"> 
+
+Controller
+
+    def index
+        sighting = Sighting.all
+        render json: sighting
+    end
+
+    def show
+        sighting = Sighting.find(params[:id])
+        render json: sighting
+    end
+
+POSTMAN
+
+GET localhost:3000/sightings
+
+[
+    {
+        "id": 2,
+        "animal_id": 1,
+        "date": "2005-04-12T11:30:00.000Z",
+        "latitude": "0° 48′ 0″ N",
+        "longitude": "14° 55′ 59.88″ E",
+        "created_at": "2021-08-12T18:34:32.222Z",
+        "updated_at": "2021-08-12T18:34:32.222Z"
+    },
+    {
+        "id": 3,
+        "animal_id": 1,
+        "date": "2005-04-16T12:40:00.000Z",
+        "latitude": "0° 48′ 0″ N",
+        "longitude": "14° 55′ 59.88″ E",
+        "created_at": "2021-08-12T18:35:22.102Z",
+        "updated_at": "2021-08-12T18:35:22.102Z"
+    },
+    {
+        "id": 4,
+        "animal_id": 2,
+        "date": "2021-08-12T11:36:00.000Z",
+        "latitude": "19° 26′ 0″ N",
+        "longitude": "99° 8′ 0″ W",
+        "created_at": "2021-08-12T18:37:47.447Z",
+        "updated_at": "2021-08-12T18:37:47.447Z"
+    }
+]
+
+GET localhost:3000/sightings/3
+
+{
+    "id": 3,
+    "animal_id": 1,
+    "date": "2005-04-16T12:40:00.000Z",
+    "latitude": "0° 48′ 0″ N",
+    "longitude": "14° 55′ 59.88″ E",
+    "created_at": "2021-08-12T18:35:22.102Z",
+    "updated_at": "2021-08-12T18:35:22.102Z"
+}
+
 # Story: As the consumer of the API I can update an animal sighting in the database.
 
 # Story: As the consumer of the API I can destroy an animal sighting in the database.
