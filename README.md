@@ -78,6 +78,42 @@ GET localhost:3000/animals/3
 
 # Story: As the consumer of the API I can update an animal in the database.
 
+Controller
+
+    def update
+        animal = Animal.find(params[:id])
+        animal.update(animal_params)
+        if animal.valid?
+            render json: animal
+        else
+            render json: animal.errors
+        end
+    end
+
+    private
+    def animal_params
+        params.require(:animal).permit(:common_name, :latin_name, :kingdom)
+    end
+
+POSTMAN
+
+PATCH localhost:3000/animals/5
+
+{
+    "common_name": "Dog"
+}
+
+SEND
+
+{
+    "common_name": "Dog",
+    "id": 5,
+    "latin_name": "Canis lupus familiaris",
+    "kingdom": "Animalia",
+    "created_at": "2021-08-12T17:53:05.613Z",
+    "updated_at": "2021-08-12T18:04:42.524Z"
+}
+
 # Story: As the consumer of the API I can destroy an animal in the database.
 
 # Story: As the consumer of the API I can create a new animal in the database.
