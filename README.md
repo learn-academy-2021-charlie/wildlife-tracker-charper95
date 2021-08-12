@@ -410,5 +410,79 @@ GET localhost:3000/sightings
 # Story: As the consumer of the API, when I view a specific animal, I can also see a list sightings of that animal.
 Hint: Checkout the Ruby on Rails API docs on how to include associations.
 
+Controller
+
+    def show
+        animal = Animal.find(params[:id])
+        render json: animal.as_json(include: :sightings)
+    end
+
+POSTMAN 
+
+GET localhost:3000/animals/1
+
+{
+    "id": 1,
+    "common_name": "Lion",
+    "latin_name": "Panthera leo",
+    "kingdom": "Animalia",
+    "created_at": "2021-08-12T17:21:47.467Z",
+    "updated_at": "2021-08-12T17:21:47.467Z",
+    "sightings": [
+        {
+            "id": 2,
+            "animal_id": 1,
+            "date": "2005-04-12T11:30:00.000Z",
+            "latitude": "0° 48′ 0″ N",
+            "longitude": "14° 55′ 59.88″ E",
+            "created_at": "2021-08-12T18:34:32.222Z",
+            "updated_at": "2021-08-12T18:34:32.222Z"
+        }
+    ]
+}
+
 # Story: As the consumer of the API, I can run a report to list all sightings during a given time period.
 Hint: Your controller can look like this:
+
+class SightingsController < ApplicationController
+  def index
+    sightings = Sighting.where(date: params[:start_date]..params[:end_date])
+    render json: sightings
+  end
+end
+
+Remember to add the start_date and end_date to what is permitted in your strong parameters method.
+
+Controller
+
+    def index
+        sighting = Sighting.where(date: params[:start_date]..params[:end_date])
+        render json: sighting
+    end
+
+    private
+    def sighting_params
+        params.require(:sighting).permit(:animal_id, :date, :latitude, :longitude, :start_date, :end_date)
+    end
+
+POSTMAN
+
+GET localhost:3000/sightings/
+
+{
+    "start_date": "2005-01-01",
+    "end_date": "2006-01-01"
+}
+
+[
+    {
+        "id": 2,
+        "animal_id": 1,
+        "date": "2005-04-12T11:30:00.000Z",
+        "latitude": "0° 48′ 0″ N",
+        "longitude": "14° 55′ 59.88″ E",
+        "created_at": "2021-08-12T18:34:32.222Z",
+        "updated_at": "2021-08-12T18:34:32.222Z"
+    }
+]
+
