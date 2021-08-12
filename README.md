@@ -95,6 +95,12 @@ Controller
         params.require(:animal).permit(:common_name, :latin_name, :kingdom)
     end
 
+Application Controller
+
+class ApplicationController < ActionController::Base
+    skip_before_action :verify_authenticity_token
+end
+
 POSTMAN
 
 PATCH localhost:3000/animals/5
@@ -115,6 +121,78 @@ SEND
 }
 
 # Story: As the consumer of the API I can destroy an animal in the database.
+
+Controller
+
+    def destroy
+        animal = Animal.find(params[:id])
+        if animal.destroy
+            render json: animal
+        else 
+            render json: animal.errors
+        end
+    end
+
+    private
+    def animal_params
+        params.require(:animal).permit(:common_name, :latin_name, :kingdom)
+    end
+
+Application Controller
+
+class ApplicationController < ActionController::Base
+    skip_before_action :verify_authenticity_token
+end
+
+POSTMAN
+
+DELETE localhost:3000/animals/3
+
+{
+    "id": 3,
+    "common_name": "Fly agaric",
+    "latin_name": "Amanita muscaria",
+    "kingdom": "Fungi",
+    "created_at": "2021-08-12T17:26:23.612Z",
+    "updated_at": "2021-08-12T17:26:23.612Z"
+}
+
+GET localhost:3000/animals
+
+[
+    {
+        "id": 1,
+        "common_name": "Lion",
+        "latin_name": "Panthera leo",
+        "kingdom": "Animalia",
+        "created_at": "2021-08-12T17:21:47.467Z",
+        "updated_at": "2021-08-12T17:21:47.467Z"
+    },
+    {
+        "id": 2,
+        "common_name": "Axolotl",
+        "latin_name": "Ambystoma mexicanum",
+        "kingdom": "Animalia",
+        "created_at": "2021-08-12T17:22:59.830Z",
+        "updated_at": "2021-08-12T17:22:59.830Z"
+    },
+    {
+        "id": 4,
+        "common_name": "Sunflower",
+        "latin_name": "Helianthus",
+        "kingdom": "Plantae",
+        "created_at": "2021-08-12T17:27:34.933Z",
+        "updated_at": "2021-08-12T17:27:34.933Z"
+    },
+    {
+        "id": 5,
+        "common_name": "Dog",
+        "latin_name": "Canis lupus familiaris",
+        "kingdom": "Animalia",
+        "created_at": "2021-08-12T17:53:05.613Z",
+        "updated_at": "2021-08-12T18:04:42.524Z"
+    }
+]
 
 # Story: As the consumer of the API I can create a new animal in the database.
 
