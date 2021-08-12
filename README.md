@@ -322,6 +322,41 @@ GET localhost:3000/sightings/3
 
 # Story: As the consumer of the API I can update an animal sighting in the database.
 
+Controller
+
+    def update
+        sighting = Sighting.find(params[:id])
+        sighting.update(sighting_params)
+        if sighting.valid?
+            render json: sighting
+        else
+            render json: sighting.errors
+        end
+    end
+
+    private
+    def sighting_params
+        params.require(:sighting).permit(:animal_id, :date, :latitude, :longitude)
+    end
+
+POSTMAN
+
+PATCH localhost:3000/sightings/3
+
+{
+    "date": "2006-05-17 12:40:00"
+}
+
+{
+    "date": "2006-05-17T12:40:00.000Z",
+    "id": 3,
+    "animal_id": 1,
+    "latitude": "0° 48′ 0″ N",
+    "longitude": "14° 55′ 59.88″ E",
+    "created_at": "2021-08-12T18:35:22.102Z",
+    "updated_at": "2021-08-12T18:52:26.667Z"
+}
+
 # Story: As the consumer of the API I can destroy an animal sighting in the database.
 
 # Story: As the consumer of the API, when I view a specific animal, I can also see a list sightings of that animal.
