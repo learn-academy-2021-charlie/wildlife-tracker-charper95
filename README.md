@@ -486,3 +486,66 @@ GET localhost:3000/sightings/
     }
 ]
 
+## Stretch Challenges
+# Note: All of these stories should include the proper RSpec tests. Validations will require specs in spec/models, and the controller method will require specs in spec/requests.
+
+# Story: As the consumer of the API, I want to see validation errors if a sighting doesn't include: latitude, longitude, or a date.
+
+Sighting Spec
+
+require 'rails_helper'
+
+RSpec.describe Sighting, type: :model do
+  it 'is not valid without date' do
+    sighting = Sighting.create latitude: '0° 48′ 0″ N', longitude: '14° 55′ 59.88″ E'
+    expect(sighting.errors[:date]).to_not be_empty
+  end
+  it 'is not valid without latitude' do
+    sighting = Sighting.create date: '2005-04-12 11:30:00', longitude: '14° 55′ 59.88″ E'
+    expect(sighting.errors[:latitude]).to_not be_empty
+  end
+  it 'is not valid without longitude' do
+    sighting = Sighting.create date: '2005-04-12 11:30:00',  latitude: '0° 48′ 0″ N'
+    expect(sighting.errors[:longitude]).to_not be_empty
+  end
+end
+
+Sighting Model
+
+class Sighting < ApplicationRecord
+    belongs_to :animal
+    validates :latitude, presence: true
+    validates :longitude, presence: true
+    validates :date, presence: true
+end
+
+# Story: As the consumer of the API, I want to see validation errors if an animal doesn't include a common name, or a latin name.
+
+Animal Spec
+
+require 'rails_helper'
+
+RSpec.describe Animal, type: :model do
+  it 'is not valid without common name' do
+    animal = Animal.create latin_name: 'Panthera leo', kingdom: 'Animalia'
+    expect(animal.errors[:common_name]).to_not be_empty
+  end
+  it 'is not valid without latin name' do
+    animal = Animal.create common_name: 'Lion', kingdom: 'Animalia'
+    expect(animal.errors[:latin_name]).to_not be_empty
+  end
+end
+
+Animal Model
+
+class Animal < ApplicationRecord
+    has_many :sightings
+    validates :common_name, presence: true
+    validates :latin_name, presence: true
+end
+
+# Story: As the consumer of the API, I want to see a validation error if the animals latin name matches exactly the common name.
+
+
+
+# Story: As the consumer of the API, I want to see a validation error if the animals latin name or common name are not unique.
