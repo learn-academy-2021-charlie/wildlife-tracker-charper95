@@ -19,6 +19,15 @@ class SightingsController < ApplicationController
         end
     end
 
+    def destroy
+        sighting = Sighting.find(params[:id])
+        if sighting.destroy
+            render json: sighting
+        else 
+            render json: sighting.errors
+        end
+    end
+
     private
     def sighting_params
         params.require(:sighting).permit(:animal_id, :date, :latitude, :longitude)
