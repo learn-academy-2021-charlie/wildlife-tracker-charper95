@@ -546,6 +546,60 @@ end
 
 # Story: As the consumer of the API, I want to see a validation error if the animals latin name matches exactly the common name.
 
-## LAST STORY WORKING ON
+Animal Spec
+
+  it 'is not valid if the common name and latin name are the same' do
+    animal = Animal.create common_name: 'Lion', latin_name: 'Lion', kingdom: 'Animalia'
+    expect(animal.errors[:common_name]).to_not be_empty
+  end
+
+Animal Model
+
+class Animal < ApplicationRecord
+    has_many :sightings
+    validates :common_name, presence: true
+    validates :latin_name, presence: true
+    validate :name_checker
+    def name_checker
+        if common_name == latin_name
+            errors.add(:common_name, 'cant be the same as latin_name')
+        end
+    end
+end
 
 # Story: As the consumer of the API, I want to see a validation error if the animals latin name or common name are not unique.
+
+Animal Spec
+
+  it 'is not valid if the common name is not unique' do
+    animal = Animal.create common_name: 'Lion', latin_name: 'Leo', kingdom: 'Animalia'
+    animal2 = Animal.create common_name: 'Lion', latin_name: 'random', kingdom: 'random'
+    expect(animal2.errors[:common_name]).to_not be_empty
+  end
+  it 'is not valid if the latin name is not unique' do
+    animal = Animal.create common_name: 'Lion', latin_name: 'Leo', kingdom: 'Animalia'
+    animal2 = Animal.create common_name: 'random', latin_name: 'Leo', kingdom: 'random'
+    expect(animal2.errors[:latin_name]).to_not be_empty
+  end
+
+Animal Model
+
+    class Animal < ApplicationRecord
+    has_many :sightings
+    validates :common_name, presence: true
+    validates :latin_name, presence: true
+    validates :common_name, uniqueness: true
+    validates :latin_name, uniqueness: true
+    validate :name_checker
+    def name_checker
+        if common_name == latin_name
+            errors.add(:common_name, 'cant be the same as latin_name')
+        end
+    end
+end
+
+## Super Stretch Challenge
+# Story: As the consumer of the API, I can submit sighting data along with a new animal in a single API call.
+Hint: Look into accepts_nested_attributes_for
+
+Last Story Worked On
